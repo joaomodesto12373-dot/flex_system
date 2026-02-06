@@ -9,10 +9,6 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.util.Map;
 
-/**
- * Resource REST para Otimização de Produção
- * Fornece o endpoint para calcular a melhor sugestão de produção
- */
 @Path("/optimization")
 @Produces(MediaType.APPLICATION_JSON)
 public class OptimizationResource {
@@ -20,10 +16,6 @@ public class OptimizationResource {
     @Inject
     OptimizationService optimizationService;
 
-    /**
-     * GET /optimization/suggest
-     * Retorna a sugestão de produção ótima baseada no estoque atual
-     */
     @GET
     @Path("/suggest")
     public Response getOptimalProduction() {
