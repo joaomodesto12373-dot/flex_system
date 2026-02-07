@@ -14,12 +14,12 @@ public class ProductRawMaterial {
     private Long id;
     
     // Ref Produto
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
     
     // Ref Matéria-Prima 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "raw_material_id", nullable = false)
     private RawMaterial rawMaterial;
     

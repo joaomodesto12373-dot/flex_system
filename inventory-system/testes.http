@@ -1,0 +1,8 @@
+POST http://localhost:8080/product-raw-materials
+Content-Type: application/json
+
+{
+  "product": { "id": 1 },
+  "rawMaterial": { "id": 1 },
+  "quantityNeeded": 5.0
+}

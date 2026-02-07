@@ -32,22 +32,22 @@ public class OptimizationService {
      */
 /**
  * Calcula a produção ótima usando Simplex
- * Retorna quantidades INTEIRAS (arredondadas para baixo)
+ * Retorna quantidades (arredondadas para baixo)
  * 
  * @return Mapa com produto ID → quantidade inteira a produzir
  */
     public Map<Long, Long> calculateOptimalProduction() {
         try {
-            // Passo 1: Buscar todos os dados
+            //Buscar todos os dados
             List<ProductRawMaterial> associations = productRawMaterialRepository.findAll().list();
             List<RawMaterial> rawMaterials = rawMaterialRepository.findAll().list();
             
-            // Passo 2: Validar dados
+            //Validar dados
             if (associations.isEmpty() || rawMaterials.isEmpty()) {
                 return new HashMap<>();
             }
             
-            // Passo 3: Extrair produtos únicos
+            //Extrair produtos únicos
             Set<Long> productIds = new HashSet<>();
             for (ProductRawMaterial assoc : associations) {
                 productIds.add(assoc.getProduct().getId());
@@ -56,7 +56,7 @@ public class OptimizationService {
             List<Long> products = new ArrayList<>(productIds);
             int numProducts = products.size();
             
-            // Passo 4: Construir função objetivo (maximizar valor)
+            //Construir função objetivo Z = c1*x1 + c2*x2 + ... + cn*xn
             double[] objectiveCoefficients = new double[numProducts];
             for (int i = 0; i < numProducts; i++) {
                 Long productId = products.get(i);
@@ -71,7 +71,7 @@ public class OptimizationService {
                 }
             }
             
-            // Passo 5: Construir restrições (quantidade de matéria-prima disponível)
+            //Construir restrições 
             List<LinearConstraint> constraints = new ArrayList<>();
             
             for (RawMaterial rawMaterial : rawMaterials) {
@@ -94,14 +94,14 @@ public class OptimizationService {
                 constraints.add(new LinearConstraint(coefficients, Relationship.LEQ, availableQuantity));
             }
             
-            // Passo 6: Adicionar restrições de não-negatividade (x >= 0)
+            //Adicionei restrições de não-negatividade (x >= 0)
             for (int i = 0; i < numProducts; i++) {
                 double[] coefficients = new double[numProducts];
                 coefficients[i] = 1.0;
                 constraints.add(new LinearConstraint(coefficients, Relationship.GEQ, 0.0));
             }
             
-            // Passo 7: Resolver usando Simplex
+            //Simplex
             LinearObjectiveFunction objective = new LinearObjectiveFunction(objectiveCoefficients, 0);
             LinearConstraintSet constraintSet = new LinearConstraintSet(constraints);
             
@@ -114,12 +114,12 @@ public class OptimizationService {
                     new NonNegativeConstraint(true)
             );
             
-            // Passo 8: Mapear resultado para produto ID → quantidade INTEIRA
+            //resultado para produto ID → quantidade 
             Map<Long, Long> result = new HashMap<>();
             double[] point = solution.getPoint();
             
             for (int i = 0; i < numProducts; i++) {
-                // Arredondar para baixo (floor) para garantir viabilidade
+                //Arredondar para baixo 
                 long quantity = (long) Math.floor(point[i]);
                 result.put(products.get(i), quantity);
             }
@@ -127,7 +127,7 @@ public class OptimizationService {
             return result;
             
         } catch (Exception e) {
-            // Se der erro, retorna vazio (não conseguiu otimizar)
+            //se der erro retorna vazio (simplex falhou)
             System.err.println("Erro ao calcular produção ótima: " + e.getMessage());
             return new HashMap<>();
         }
