@@ -60,8 +60,9 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-math3</artifactId>
-:e            <version>3.6.1</version>
+            <version>3.6.1</version>
         </dependency>
+
 
         <dependency>
             <groupId>io.quarkus</groupId>
